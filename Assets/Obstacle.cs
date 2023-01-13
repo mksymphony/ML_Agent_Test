@@ -8,11 +8,18 @@ public class Obstacle : MonoBehaviour
 
     private void Awake()
     {
-        _player = GameObject.Find("Agent(Player)").GetComponent<JumpJump>();
-    }
+        if (!_player)
+            _player = GameObject.Find("Agent(Player)").GetComponent<JumpJump>();
 
+    }
+    private void Start()
+    {
+
+
+    }
     private void FixedUpdate()
     {
+
         Vector2 pos = transform.position;
 
         pos.x -= _player.velocity.x * Time.fixedDeltaTime;

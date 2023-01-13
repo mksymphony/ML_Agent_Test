@@ -30,12 +30,12 @@ public class Ground : MonoBehaviour
         }
 
         _boxCollider = GetComponent<BoxCollider2D>();
-        _groundHeight = gameObject.transform.position.y + _boxCollider.size.y / 2;
         _screenRight = Camera.main.transform.position.x;
     }
 
     private void Update()
     {
+        _groundHeight = gameObject.transform.position.y + _boxCollider.size.y / 2;
         _currTime += Time.deltaTime;
         if (_currTime > _time)
         {
@@ -65,6 +65,8 @@ public class Ground : MonoBehaviour
                 GenerateGround();
                 _timeEnd = false;
             }
+            else
+                return;
         }
     }
     private void GenerateGround()
@@ -87,6 +89,18 @@ public class Ground : MonoBehaviour
         Ground goGround = goCollider.GetComponent<Ground>();
         goGround._groundHeight = ob.transform.position.y + (goCollider.size.y / 2);
 
+        GroundFall fall = goCollider.AddComponent<GroundFall>();
+        if (fall != null)
+        {
+            Destroy(fall);
+            fall = null;
+        }
+        if (Random.Range(0, 3) == 0)
+        {
+
+            fall = ob.AddComponent<GroundFall>();
+        }
+
         var obstacleNum = Random.Range(0, 3);
         for (int i = 0; i < obstacleNum; i++)
         {
@@ -99,6 +113,12 @@ public class Ground : MonoBehaviour
             var x = Random.Range(left, right);
             Vector2 boxPos = new Vector2(x, y);
             box.transform.position = boxPos;
+
+            if (fall != null)
+            {
+                Obstacle o = box.GetComponent<Obstacle>();
+                fall.obstacle.Add(o);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ public class JumpJump : Agent
     [SerializeField] private float _distance = 0;
 
     [SerializeField] private float _gravity;
-    [SerializeField] private float _groundHeight = 10;
+    [SerializeField] public float _groundHeight = 10;
     [SerializeField] private float _jumpVelocity = 20;
 
     [SerializeField] private float _maxHoldJumpTime = 0.4f;
@@ -28,11 +28,17 @@ public class JumpJump : Agent
 
     private float _maxMaxHoldJumpTime = 0.4f;
 
+    [SerializeField] private LayerMask _groundLayerMask;
+    [SerializeField] private LayerMask _obstacleLayerMask;
+
+    private GroundFall _fall;
+
     public float distance => _distance;
     public Vector2 velocity => _velocity;
     public float jumpVelocity => _jumpVelocity;
     public float maxHoldJumpTime => _maxHoldJumpTime;
     public float gravity => _gravity;
+    public bool isDead => _isDead;
 
     private void Update()
     {
@@ -46,6 +52,12 @@ public class JumpJump : Agent
                 _velocity.y = _jumpVelocity;
                 _isHoldingJump = true;
                 _holdJumpTimer = 0;
+
+                if (_fall != null)
+                {
+                    _fall.player = null;
+                    _fall = null;
+                }
             }
         }
         if (Input.GetKeyUp(KeyCode.Space))
@@ -59,6 +71,7 @@ public class JumpJump : Agent
 
         if (this.gameObject.transform.position.y <= -12)
         {
+            _isDead = true;
             Debug.Log("End");
             EndEpisode();
             AddReward(-1f);
@@ -88,7 +101,7 @@ public class JumpJump : Agent
             Vector2 rayOrigin = new Vector2(pos.x + 0.7f, pos.y);
             Vector2 rayDirection = Vector2.up;
             float rayDistance = _velocity.y * Time.fixedDeltaTime;
-            RaycastHit2D hit2D = Physics2D.Raycast(rayOrigin, rayDirection, rayDistance);
+            RaycastHit2D hit2D = Physics2D.Raycast(rayOrigin, rayDirection, rayDistance, _groundLayerMask);
 
             if (hit2D.collider != null)
             {
@@ -103,12 +116,17 @@ public class JumpJump : Agent
                         _velocity.y = 0;
                         _isGround = true;
                     }
+                    _fall = ground.GetComponent<GroundFall>();
+                    if (_fall != null)
+                    {
+                        _fall.player = this;
+                    }
                 }
             }
             Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.red);
 
             Vector2 wallOrigin = new Vector2(pos.x, pos.y);
-            RaycastHit2D wallHit = Physics2D.Raycast(wallOrigin, Vector2.right, _velocity.x * Time.fixedDeltaTime);
+            RaycastHit2D wallHit = Physics2D.Raycast(wallOrigin, Vector2.right, _velocity.x * Time.fixedDeltaTime, _groundLayerMask);
             if (wallHit.collider != null)
             {
                 Ground ground = wallHit.collider.GetComponent<Ground>();
@@ -141,6 +159,12 @@ public class JumpJump : Agent
             Vector2 rayOrigin = new Vector2(pos.x - 0.7f, pos.y);
             Vector2 rayDirection = Vector2.up;
             float rayDistance = _velocity.y * Time.fixedDeltaTime;
+
+            if (_fall != null)
+            {
+                rayDistance = -_fall.fallSpeed * Time.fixedDeltaTime;
+            }
+
             RaycastHit2D hit2D = Physics2D.Raycast(rayOrigin, rayDirection, rayDistance);
 
             if (hit2D.collider == null)
@@ -150,7 +174,7 @@ public class JumpJump : Agent
             Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.yellow);
         }
         Vector2 obstOrigin = new Vector2(pos.x, pos.y);
-        RaycastHit2D obstHitx = Physics2D.Raycast(obstOrigin, Vector2.right, velocity.x * Time.fixedDeltaTime);
+        RaycastHit2D obstHitx = Physics2D.Raycast(obstOrigin, Vector2.right, velocity.x * Time.fixedDeltaTime, _obstacleLayerMask);
         if (obstHitx.collider != null)
         {
             Obstacle obstacle = obstHitx.collider.GetComponent<Obstacle>();
@@ -161,7 +185,7 @@ public class JumpJump : Agent
             }
         }
 
-        RaycastHit2D obstHity = Physics2D.Raycast(obstOrigin, Vector2.up, velocity.x * Time.fixedDeltaTime);
+        RaycastHit2D obstHity = Physics2D.Raycast(obstOrigin, Vector2.up, velocity.x * Time.fixedDeltaTime, _obstacleLayerMask);
         if (obstHity.collider != null)
         {
             Obstacle obstacle = obstHity.collider.GetComponent<Obstacle>();

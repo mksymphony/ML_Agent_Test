@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Parallax : MonoBehaviour
 {
@@ -15,11 +16,15 @@ public class Parallax : MonoBehaviour
         {
             _player = GameObject.Find("Agent(Player)").GetComponent<JumpJump>();
         }
+        if (_player.isDead == true)
+            Destroy(gameObject);
     }
     private void FixedUpdate()
     {
+        if (_player.isDead == true)
+            Destroy(gameObject);
         var realVelocity = _player.velocity.x / _depth;
-        Vector2 pos = transform.position;
+        Vector3 pos = transform.position;
 
         pos.x -= realVelocity * Time.fixedDeltaTime;
 
