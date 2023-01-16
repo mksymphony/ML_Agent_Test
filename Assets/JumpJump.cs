@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class JumpJump : Agent
 {
@@ -72,15 +73,9 @@ public class JumpJump : Agent
         if (this.gameObject.transform.position.y <= -12)
         {
             _isDead = true;
-            Debug.Log("End");
-            EndEpisode();
-            AddReward(-1f);
             Destroy(gameObject);
         }
-        else
-        {
-            AddReward(0.1f);
-        }
+
         if (!_isGround)
         {
             if (_isHoldingJump)
@@ -203,6 +198,29 @@ public class JumpJump : Agent
     {
         Destroy(obstacle.gameObject);
         _velocity.x *= 0.7f;
+    }
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        if (this.gameObject.transform.position.y <= -12)
+        {
+            EndEpisode();
+            AddReward(-1f);
+        }
+        else
+        {
+            AddReward(0.1F);
+        }
+        Vector2 obstOrigin = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+        RaycastHit2D obstHitx = Physics2D.Raycast(obstOrigin, Vector2.right, velocity.x * Time.fixedDeltaTime, _obstacleLayerMask);
+        if (obstHitx.collider != null)
+        {
+            Obstacle obstacle = obstHitx.collider.GetComponent<Obstacle>();
+            if (obstacle != null)
+            {
+                HitObstacle(obstacle);
+                AddReward(-1f);
+            }
+        }
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {

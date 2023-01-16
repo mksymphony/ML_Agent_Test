@@ -43,7 +43,7 @@ public class UIController : MonoBehaviour
     }
     public void Quit()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("SampleScene 2");
     }
     public void Retry()
     {

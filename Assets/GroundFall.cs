@@ -16,7 +16,7 @@ public class GroundFall : MonoBehaviour
     public JumpJump player;
     private void Awake()
     {
-        _fallSpeed = Random.Range(0.1f, 1f);
+        _fallSpeed = Random.Range(0.02f, 0.05f);
     }
 
     private void FixedUpdate()
@@ -38,16 +38,19 @@ public class GroundFall : MonoBehaviour
 
             foreach (Obstacle o in _obstacles)
             {
-                Vector2 oPos = o.transform.position;
-                oPos.y -= fallAmount;
-                o.transform.position = oPos;
+                if (o != null)
+                {
+                    var oPos = o.transform.position;
+                    oPos.y -= fallAmount;
+                    o.transform.position = oPos;
+                }
             }
 
             transform.position = pos;
         }
         else
         {
-            if (player == null)
+            if (player != null)
             {
                 _ShoudFall = true;
             }

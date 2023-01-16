@@ -97,7 +97,6 @@ public class Ground : MonoBehaviour
         }
         if (Random.Range(0, 3) == 0)
         {
-
             fall = ob.AddComponent<GroundFall>();
         }
 
