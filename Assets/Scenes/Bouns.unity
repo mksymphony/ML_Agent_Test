@@ -358,7 +358,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 81634877e06776944be9dd35a7a68369, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: bc839a29e32fdc747950b9a46b7f6ffc, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Bouncer

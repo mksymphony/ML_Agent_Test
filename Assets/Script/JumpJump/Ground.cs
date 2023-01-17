@@ -95,9 +95,11 @@ public class Ground : MonoBehaviour
             Destroy(fall);
             fall = null;
         }
-        if (Random.Range(0, 3) == 0)
+        if (Random.Range(0, 10) == 0)
         {
             fall = ob.AddComponent<GroundFall>();
+            var color = fall.gameObject.GetComponent<Renderer>();
+            color.material.color = new Color(90 / 255f, 142 / 255f, 82 / 255f);
         }
 
         var obstacleNum = Random.Range(0, 3);

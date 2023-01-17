@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.PlayerSettings;
 
 public class JumpJump : Agent
@@ -193,43 +196,54 @@ public class JumpJump : Agent
 
         transform.position = pos;
     }
-
     private void HitObstacle(Obstacle obstacle)
     {
         Destroy(obstacle.gameObject);
         _velocity.x *= 0.7f;
     }
-    public override void OnActionReceived(ActionBuffers actions)
-    {
-        if (this.gameObject.transform.position.y <= -12)
-        {
-            EndEpisode();
-            AddReward(-1f);
-        }
-        else
-        {
-            AddReward(0.1F);
-        }
-        Vector2 obstOrigin = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-        RaycastHit2D obstHitx = Physics2D.Raycast(obstOrigin, Vector2.right, velocity.x * Time.fixedDeltaTime, _obstacleLayerMask);
-        if (obstHitx.collider != null)
-        {
-            Obstacle obstacle = obstHitx.collider.GetComponent<Obstacle>();
-            if (obstacle != null)
-            {
-                HitObstacle(obstacle);
-                AddReward(-1f);
-            }
-        }
-    }
-    public override void Heuristic(in ActionBuffers actionsOut)
-    {
-        var continuousActionsOut = actionsOut.ContinuousActions;
-        if (Input.GetKey(KeyCode.Space))
-        {
-            continuousActionsOut[0] = 0;
-            continuousActionsOut[1] = 1;
-        }
-
-    }
+    //public override void OnEpisodeBegin()
+    //{
+    //    Vector2 pos = transform.position;
+    //    if (pos.y <= -11)
+    //    {
+    //        EndEpisode();
+    //        transform.position = new Vector2(-15, 0);
+    //        AddReward(-1f);
+    //    }
+    //}
+    //public override void OnActionReceived(ActionBuffers actions)
+    //{
+    //    if (this.gameObject.transform.position.y <= -12)
+    //    {
+    //        AddReward(-1f);
+    //    }
+    //    else
+    //    {
+    //        AddReward(0.1F);
+    //    }
+    //    Vector2 obstOrigin = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+    //    RaycastHit2D obstHitx = Physics2D.Raycast(obstOrigin, Vector2.right, velocity.x * Time.fixedDeltaTime, _obstacleLayerMask);
+    //    if (obstHitx.collider != null)
+    //    {
+    //        Obstacle obstacle = obstHitx.collider.GetComponent<Obstacle>();
+    //        if (obstacle != null)
+    //        {
+    //            HitObstacle(obstacle);
+    //            AddReward(-1f);
+    //        }
+    //    }
+    //}
+    //public override void CollectObservations(VectorSensor sensor)
+    //{
+    //    sensor.AddObservation(_velocity.x);
+    //    sensor.AddObservation(_velocity.y);
+    //}
+    //public override void Heuristic(in ActionBuffers actionsOut)
+    //{
+    //    var continuousActionsOut = actionsOut.ContinuousActions;
+    //    if (Input.GetKey(KeyCode.Space))
+    //    {
+    //        continuousActionsOut[0] = 0;
+    //    }
+    //}
 }

@@ -34,6 +34,7 @@ public class UIController : MonoBehaviour
     {
         var distance = Mathf.FloorToInt(_agentMovement.distance);
         _distanceText.text = distance + " m";
+        _distanceText.text = distance + " m";
 
         if (_agentMovement.isDead)
         {
@@ -43,10 +44,10 @@ public class UIController : MonoBehaviour
     }
     public void Quit()
     {
-        SceneManager.LoadScene("SampleScene 2");
+        SceneManager.LoadScene("JumpJump");
     }
     public void Retry()
     {
-        SceneManager.LoadScene("SampleScene 2");
+        SceneManager.LoadScene("JumpJump");
     }
 }
