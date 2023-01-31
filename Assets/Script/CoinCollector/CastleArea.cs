@@ -24,12 +24,16 @@ public class CastleArea : MonoBehaviour
     public void ResetArea()
     {
         foreach (var col in collectibles)
-            col.SetActive(true);
+            col.SetActive(false);
 
         _block.transform.position = _originalBlockPosition + Vector3.forward * Academy.Instance.EnvironmentParameters.GetWithDefault("block_offset", _blockOffset);
         _block.transform.rotation = _originalBlockRotation;
     }
-
+    public void SetOnCoin()
+    {
+        foreach (var col in collectibles)
+            col.SetActive(true);
+    }
     public void Collect(GameObject gameObject)
     {
         gameObject.SetActive(false);

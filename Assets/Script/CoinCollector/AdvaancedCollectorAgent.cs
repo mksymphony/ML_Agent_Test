@@ -10,7 +10,6 @@ public class AdvaancedCollectorAgent : Agent
     private SimpleCharacterController _characterController;
     new private Rigidbody _rigidbody;
     [SerializeField] private CastleArea _castleArea;
-    [SerializeField] private BlockColliderCheck block;
 
     public override void Initialize()
     {
@@ -41,7 +40,6 @@ public class AdvaancedCollectorAgent : Agent
     {
         if (Vector3.Distance(_startPosition, transform.position) > 20f)
         {
-            block.SetCheck();
             AddReward(-1f);
             EndEpisode();
         }
@@ -54,8 +52,8 @@ public class AdvaancedCollectorAgent : Agent
         _characterController.TurnInput = horizontal;
         _characterController.JumpInput = jump;
 
-        if (vertical > 0f)
-            AddReward(0.2f / MaxStep);
+        //if (vertical > 0f)
+        //    AddReward(0.2f / MaxStep);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -66,13 +64,12 @@ public class AdvaancedCollectorAgent : Agent
         }
         else if (other.tag == "goal")
         {
-            block.SetCheck();
             AddReward(1f);
             EndEpisode();
         }
     }
-    public void Reward()
+    public void RewardSet(float point)
     {
-        AddReward(0.1f);
+        AddReward(point);
     }
 }

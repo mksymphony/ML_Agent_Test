@@ -11,6 +11,7 @@ TagManager:
   - baby
   - Platform
   - Collectible
+  - wall
   layers:
   - Default
   - TransparentFX
