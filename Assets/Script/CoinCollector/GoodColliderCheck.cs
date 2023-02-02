@@ -12,8 +12,8 @@ public class GoodColliderCheck : MonoBehaviour
         if (other.gameObject.CompareTag("Block"))
         {
             Debug.Log("GoodPosition");
+            agent.RewardSet(0.2f / agent.MaxStep);
             castle.SetOnCoin();
-            agent.RewardSet(0.1f);
         }
     }
 }

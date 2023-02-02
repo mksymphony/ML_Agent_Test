@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class CastleArea : MonoBehaviour
 {
+    [SerializeField] private AdvaancedCollectorAgent agent;
+
     public List<GameObject> collectibles;
     [SerializeField] private GameObject _block;
     [Range(0, 10)][SerializeField] private float _blockOffset = 10f;
@@ -20,7 +22,14 @@ public class CastleArea : MonoBehaviour
         _originalBlockRotation = _block.transform.rotation;
         _block.transform.position += Vector3.forward * Academy.Instance.EnvironmentParameters.GetWithDefault("block_offset", _blockOffset);
     }
-
+    private void Update()
+    {
+        if (_block.transform.position.y <= -5)
+        {
+            agent.RewardSet(-1f);
+            agent.EndEpisode();
+        }
+    }
     public void ResetArea()
     {
         foreach (var col in collectibles)

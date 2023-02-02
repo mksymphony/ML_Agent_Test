@@ -140,7 +140,6 @@ public class PushAgent : Agent
     /// Called every step of the engine. Here the agent takes an action.
     /// </summary>
     public override void OnActionReceived(ActionBuffers actionBuffers)
-
     {
         // Move the agent using the action.
         MoveAgent(actionBuffers.DiscreteActions);

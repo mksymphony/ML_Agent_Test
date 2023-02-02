@@ -52,8 +52,7 @@ public class AdvaancedCollectorAgent : Agent
         _characterController.TurnInput = horizontal;
         _characterController.JumpInput = jump;
 
-        //if (vertical > 0f)
-        //    AddReward(0.2f / MaxStep);
+        AddReward(-1f / MaxStep);
     }
     private void OnTriggerEnter(Collider other)
     {

@@ -11,7 +11,7 @@ public class BadColliderCheck : MonoBehaviour
         if (other.gameObject.CompareTag("Block"))
         {
             Debug.Log("Wannig Platform set badPosition");
-            agent.RewardSet(-1f);
+            agent.RewardSet(-0.1f);
             agent.EndEpisode();
         }
     }
