@@ -20,7 +20,7 @@ public class AirPlaneMovement : MonoBehaviour
 
     [SerializeField] private Transform _propella;
 
-    [SerializeField] private float _throttle;
+    [SerializeField] public float _throttle;
 
     [SerializeField] private TextMeshProUGUI Throttle;
     [SerializeField] private TextMeshProUGUI AirSpeed;
@@ -31,7 +31,13 @@ public class AirPlaneMovement : MonoBehaviour
     private float _pitch;
     private float _yaw;
 
-    public float throttle => _throttle;
+
+    public float rolldInput { get; set; }
+    public float pitchInput { get; set; }
+    public float yawInput { get; set; }
+    public bool EngineStart { get; set; }
+    public bool EngineOff { get; set; }
+
 
     private float _responseModifier
     {
@@ -42,8 +48,6 @@ public class AirPlaneMovement : MonoBehaviour
     }
 
     private Rigidbody _rid;
-
-
 
     private void Awake()
     {
@@ -61,23 +65,22 @@ public class AirPlaneMovement : MonoBehaviour
         _pitch = Input.GetAxis("Pitch");
         _yaw = Input.GetAxis("Yaw");
 
-        if (Input.GetKey(KeyCode.LeftShift) && _throttle < -1f)
+        if (Input.GetKey(KeyCode.LeftShift) && _throttle < -1f && EngineOff)
             _throttle += _throttleIncrement * Time.deltaTime;
 
-        else if (Input.GetKey(KeyCode.Space))
+        else if (Input.GetKey(KeyCode.Space) && EngineStart)
             _throttle -= _throttleIncrement * Time.deltaTime;
     }
-    private void AddForce()
+    public void AddForce()
     {
         if (_throttle < -_maxThrottle)
         {
             _throttle = -_maxThrottle;
         }
-
         _rid.AddForce(transform.forward * _maxThrottle * _throttle);
-        _rid.AddTorque(transform.up * _yaw * _responseModifier);
-        _rid.AddTorque(transform.right * _pitch * _responseModifier);
-        _rid.AddTorque(transform.forward * _roll * _responseModifier);
+        _rid.AddTorque(transform.up * _yaw * _responseModifier * yawInput);
+        _rid.AddTorque(-transform.right * _pitch * _responseModifier * pitchInput);
+        _rid.AddTorque(transform.forward * _roll * _responseModifier * rolldInput);
 
         _rid.AddForce(Vector3.up * _rid.velocity.magnitude * 135);
     }
