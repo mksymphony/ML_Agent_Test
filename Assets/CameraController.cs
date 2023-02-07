@@ -29,6 +29,6 @@ public class CameraController : MonoBehaviour
     private void PositionSet()
     {
         transform.position = Vector3.MoveTowards(transform.position, _target, Time.fixedDeltaTime * _speed);
-        transform.forward = -_povs[_index].forward;
+        transform.forward = _povs[_index].forward;
     }
 }

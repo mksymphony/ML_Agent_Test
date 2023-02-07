@@ -20,7 +20,7 @@ public class goalObject : MonoBehaviour
         if (col.CompareTag("Player"))
         {
             _checker.ActiveOtherObject();
-            _agent.AddReward(0.5f);
+            _agent.AddReward(1f);
         }
     }
 }

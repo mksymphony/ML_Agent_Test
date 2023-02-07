@@ -10,6 +10,8 @@ public class AirPlaneMovementAgent : Agent
     [SerializeField] private GoalChecker _goalChecker;
 
     private Vector3 _startPosition;
+    private Quaternion _startRotation;
+
     private AirPlaneMovement _agent;
 
     public override void Initialize()
@@ -17,13 +19,15 @@ public class AirPlaneMovementAgent : Agent
         if (!_goalChecker)
             _goalChecker = GameObject.Find("Goal").GetComponent<GoalChecker>();
         _startPosition = transform.position;
+        _startRotation = Quaternion.Euler(0, 0, 0);
         _agent = GetComponent<AirPlaneMovement>();
     }
 
     public override void OnEpisodeBegin()
     {
         transform.position = _startPosition;
-        _agent._throttle = 0;
+        transform.rotation = _startRotation;
+        _agent._throttle = -60;
         _goalChecker.ResetGoal();
     }
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -50,8 +54,8 @@ public class AirPlaneMovementAgent : Agent
         var pitch = actions.DiscreteActions[1] <= 1 ? actions.DiscreteActions[1] : -1;
         var yaw = actions.DiscreteActions[2] <= 1 ? actions.DiscreteActions[2] : -1;
 
-        bool EngineOn = actions.DiscreteActions[3] > 0;
-        bool EngineOff = actions.DiscreteActions[4] > 0;
+        var EngineOn = actions.DiscreteActions[3] > 0;
+        var EngineOff = actions.DiscreteActions[4] > 0;
 
         _agent.rolldInput = roll;
         _agent.pitchInput = pitch;

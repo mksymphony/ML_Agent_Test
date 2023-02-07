@@ -41,7 +41,7 @@ public class AdvaancedCollectorAgent : Agent
         if (Vector3.Distance(_startPosition, transform.position) > 20f)
         {
             AddReward(-1f);
-            EndEpisode();
+            EndEpisode();   
         }
 
         var vertical = actions.DiscreteActions[0] <= 1 ? actions.DiscreteActions[0] : -1;

@@ -26,12 +26,6 @@ public class AirPlaneMovement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI AirSpeed;
     [SerializeField] private TextMeshProUGUI Altitude;
 
-
-    private float _roll;
-    private float _pitch;
-    private float _yaw;
-
-
     public float rolldInput { get; set; }
     public float pitchInput { get; set; }
     public float yawInput { get; set; }
@@ -61,31 +55,29 @@ public class AirPlaneMovement : MonoBehaviour
     }
     private void HandleInputs()
     {
-        _roll = Input.GetAxis("Roll");
-        _pitch = Input.GetAxis("Pitch");
-        _yaw = Input.GetAxis("Yaw");
-
-        if (Input.GetKey(KeyCode.LeftShift) && _throttle < -1f && EngineOff)
+        if (_throttle < -1f && EngineStart)
             _throttle += _throttleIncrement * Time.deltaTime;
 
-        else if (Input.GetKey(KeyCode.Space) && EngineStart)
+        else if (EngineOff)
             _throttle -= _throttleIncrement * Time.deltaTime;
     }
     public void AddForce()
     {
-        if (_throttle < -_maxThrottle)
+        if (_throttle < _maxThrottle)
         {
-            _throttle = -_maxThrottle;
+            _throttle = _maxThrottle;
         }
         _rid.AddForce(transform.forward * _maxThrottle * _throttle);
-        _rid.AddTorque(transform.up * _yaw * _responseModifier * yawInput);
-        _rid.AddTorque(-transform.right * _pitch * _responseModifier * pitchInput);
-        _rid.AddTorque(transform.forward * _roll * _responseModifier * rolldInput);
+        _rid.AddTorque(transform.up * yawInput * _responseModifier);
+        _rid.AddTorque(-transform.right * pitchInput * _responseModifier);
+        _rid.AddTorque(transform.forward * rolldInput * _responseModifier);
 
         _rid.AddForce(Vector3.up * _rid.velocity.magnitude * 135);
     }
     private void UpdateHUD()
     {
+        if (!Throttle && !AirSpeed && !Altitude)
+            return;
         Throttle.text = "Throttle" + _throttle.ToString("F0") + "%";
         AirSpeed.text = "Airspeed :" + (_rid.velocity.magnitude * 3.6f).ToString("F0") + "km/h";
         Altitude.text = "Altitude :" + transform.position.y.ToString("F0") + "m";

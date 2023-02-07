@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.MLAgents;
 using UnityEngine;
 
 public class PlayerCrash : MonoBehaviour
@@ -9,6 +10,7 @@ public class PlayerCrash : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            _agent = other.gameObject.GetComponent<AirPlaneMovementAgent>();
             _agent.AddReward(-1f);
             _agent.EndEpisode();
         }
