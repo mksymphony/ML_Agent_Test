@@ -18,8 +18,10 @@ public class AirPlaneMovementAgent : Agent
     {
         if (!_goalChecker)
             _goalChecker = GameObject.Find("Goal").GetComponent<GoalChecker>();
+
         _startPosition = transform.position;
         _startRotation = Quaternion.Euler(0, 0, 0);
+
         _agent = GetComponent<AirPlaneMovement>();
     }
 
@@ -49,6 +51,7 @@ public class AirPlaneMovementAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         MapLimits();
+        SearchTarget();
 
         var roll = actions.DiscreteActions[0] <= 1 ? actions.DiscreteActions[0] : -1;
         var pitch = actions.DiscreteActions[1] <= 1 ? actions.DiscreteActions[1] : -1;
@@ -63,9 +66,19 @@ public class AirPlaneMovementAgent : Agent
         _agent.EngineStart = EngineOn;
         _agent.EngineOff = EngineOff;
 
-        AddReward(-1f / MaxStep);
+        //AddReward(-1f / MaxStep);
     }
 
+    private void SearchTarget()
+    {
+        var currobj = _goalChecker.CurrObject;
+        var sinceDistance = Vector3.Distance(currobj.transform.position, transform.position);
+        if (sinceDistance > 1f)
+        {
+            AddReward(-1 / MaxStep);
+        }
+
+    }
 
     private void MapLimits()
     {
@@ -84,7 +97,7 @@ public class AirPlaneMovementAgent : Agent
             AddReward(-1f);
             EndEpisode();
         }
-        else if (transform.position.z < -500f)
+        else if (transform.position.x < -500f)
         {
             AddReward(-1f);
             EndEpisode();

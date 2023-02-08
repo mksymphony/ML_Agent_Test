@@ -6,8 +6,11 @@ public class GoalChecker : MonoBehaviour
 {
     [SerializeField] private GameObject[] _goalObject;
     [SerializeField] private int _goalObjectMaxValue;
+    [SerializeField] private float SearchTime;
 
     private int _index = 0;
+
+    public GameObject CurrObject;
     private void Awake()
     {
         _goalObjectMaxValue = _goalObject.Length;
@@ -16,6 +19,11 @@ public class GoalChecker : MonoBehaviour
             _goalObject[i].SetActive(false);
             _goalObject[_index].gameObject.SetActive(true);
         }
+        CurrObject = _goalObject[_index];
+    }
+    private void Update()
+    {
+        StartCoroutine(SearchTarget());
     }
     public void ActiveOtherObject()
     {
@@ -32,5 +40,10 @@ public class GoalChecker : MonoBehaviour
             _goalObject[i].SetActive(false);
             _goalObject[_index].gameObject.SetActive(true);
         }
+    }
+    private IEnumerator SearchTarget()
+    {
+        yield return new WaitForSeconds(SearchTime);
+        CurrObject = _goalObject[_index];
     }
 }
