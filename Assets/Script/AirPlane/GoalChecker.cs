@@ -1,16 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GoalChecker : MonoBehaviour
 {
+    [SerializeField] private GameObject _finalGoal;
     [SerializeField] private GameObject[] _goalObject;
     [SerializeField] private int _goalObjectMaxValue;
     [SerializeField] private float SearchTime;
 
-    private int _index = 0;
+    [SerializeField] private int _index = 0;
 
     public GameObject CurrObject;
+    public int index => _index;
+    public int goalObjectMaxValue => _goalObjectMaxValue;
+    public GameObject[] goalObject => _goalObject;
+    public GameObject FinalGoal => _finalGoal;
     private void Awake()
     {
         _goalObjectMaxValue = _goalObject.Length;
@@ -27,6 +33,7 @@ public class GoalChecker : MonoBehaviour
     }
     public void ActiveOtherObject()
     {
+
         _goalObject[_index + 1].gameObject.SetActive(true);
         _goalObject[_index].gameObject.SetActive(false);
         _index++;

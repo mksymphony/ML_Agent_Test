@@ -19,8 +19,23 @@ public class goalObject : MonoBehaviour
     {
         if (col.CompareTag("Player"))
         {
+            if (_checker.index == _checker.goalObject.Length - 1)
+            {
+                FinalGoalObjectActive();
+            }
             _checker.ActiveOtherObject();
-            _agent.AddReward(1f);
+            _agent.AddReward(0.5f);
         }
+    }
+
+    private void FinalGoalObjectActive()
+    {
+        for (int i = 0; i < _checker.goalObject.Length; i++)
+        {
+            _checker.goalObject[i].SetActive(false);
+        }
+        _agent.AddReward(1f);
+        _agent.EndEpisode();
+        _checker.FinalGoal.SetActive(true);
     }
 }

@@ -3,23 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Sensors;
 using UnityEngine;
 
 public class AirPlaneMovementAgent : Agent
 {
     [SerializeField] private GoalChecker _goalChecker;
 
-    private Vector3 _startPosition;
     private Quaternion _startRotation;
 
     private AirPlaneMovement _agent;
-
     public override void Initialize()
     {
         if (!_goalChecker)
             _goalChecker = GameObject.Find("Goal").GetComponent<GoalChecker>();
 
-        _startPosition = transform.position;
         _startRotation = Quaternion.Euler(0, 0, 0);
 
         _agent = GetComponent<AirPlaneMovement>();
@@ -27,11 +25,20 @@ public class AirPlaneMovementAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        transform.position = _startPosition;
-        transform.rotation = _startRotation;
-        _agent._throttle = -60;
+        SetTransformPosition();
+
+        _agent._throttle = 0;
         _goalChecker.ResetGoal();
     }
+
+    private void SetTransformPosition()
+    {
+        var ranXposition = UnityEngine.Random.Range(25f, 90f);
+        var ranYposition = UnityEngine.Random.Range(12f, 45f);
+        transform.position = new Vector3(ranXposition, ranYposition, -495);
+        transform.rotation = _startRotation;
+    }
+
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var roll = Mathf.RoundToInt(Input.GetAxis("Roll"));
@@ -68,16 +75,20 @@ public class AirPlaneMovementAgent : Agent
 
         //AddReward(-1f / MaxStep);
     }
-
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        sensor.AddObservation(transform.position);
+        sensor.AddObservation(_goalChecker.goalObject[_goalChecker.index].transform.position);
+        sensor.AddObservation(Vector3.Distance(_goalChecker.goalObject[_goalChecker.index].transform.position, transform.position));
+    }
     private void SearchTarget()
     {
         var currobj = _goalChecker.CurrObject;
         var sinceDistance = Vector3.Distance(currobj.transform.position, transform.position);
-        if (sinceDistance > 1f)
+        if (sinceDistance > 3f)
         {
             AddReward(-1 / MaxStep);
         }
-
     }
 
     private void MapLimits()

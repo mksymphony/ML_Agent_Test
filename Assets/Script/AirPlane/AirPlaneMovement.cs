@@ -49,13 +49,14 @@ public class AirPlaneMovement : MonoBehaviour
     }
     private void Update()
     {
+
         HandleInputs();
         UpdateHUD();
         Propella();
     }
     private void HandleInputs()
     {
-        if (_throttle < -1f && EngineStart)
+        if (EngineStart)
             _throttle += _throttleIncrement * Time.deltaTime;
 
         else if (EngineOff)
@@ -63,13 +64,15 @@ public class AirPlaneMovement : MonoBehaviour
     }
     public void AddForce()
     {
-        if (_throttle < _maxThrottle)
+        if (_throttle >= _maxThrottle)
         {
             _throttle = _maxThrottle;
         }
+        if (_throttle <= 0)
+            _throttle = 0;
         _rid.AddForce(transform.forward * _maxThrottle * _throttle);
-        _rid.AddTorque(transform.up * yawInput * _responseModifier);
-        _rid.AddTorque(-transform.right * pitchInput * _responseModifier);
+        _rid.AddTorque(-transform.up * yawInput * _responseModifier);
+        _rid.AddTorque(transform.right * pitchInput * _responseModifier);
         _rid.AddTorque(transform.forward * rolldInput * _responseModifier);
 
         _rid.AddForce(Vector3.up * _rid.velocity.magnitude * 135);
